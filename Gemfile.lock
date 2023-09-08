@@ -127,6 +127,7 @@ GEM
     nio4r (2.5.9)
     nokogiri (1.15.4-x86_64-linux)
       racc (~> 1.4)
+    pg (1.5.4)
     psych (5.1.0)
       stringio
     public_suffix (5.0.3)
@@ -198,7 +199,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.6.4-x86_64-linux)
     stringio (3.0.8)
     thor (1.2.2)
     timeout (0.4.0)
@@ -229,13 +229,13 @@ DEPENDENCIES
   capybara
   debug
   jbuilder
+  pg (~> 1.1)
   puma (~> 5.0)
   rails (~> 7.0.7, >= 7.0.7.2)
   react_on_rails (= 13.4)
   selenium-webdriver
   shakapacker (= 7.0)
   sprockets-rails
-  sqlite3 (~> 1.4)
   tzinfo-data
   web-console
   webdrivers
