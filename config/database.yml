@@ -17,16 +17,16 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: berry.db.elephantsql.com
+  host: <%= ENV['DB_HOST'] %>
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
   <<: *default
-  database: tfdadslj
-  username: tfdadslj
-  password: zGrCuKuAWTlhg5xiutPJ8eJFr18ziXL7
+  database: <%= ENV['DB'] %>
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PW'] %>
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
