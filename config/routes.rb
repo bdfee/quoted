@@ -8,6 +8,6 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route "/" to be handled by hello_world_controller.rb action index
-  root 'hello_world#index'
+  root 'main#index'
 end
 

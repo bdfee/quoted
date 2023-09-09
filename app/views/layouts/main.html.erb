@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Quote me on it</title>
+    <title>Quoted</title>
     <%= csrf_meta_tags %>
-    <%= javascript_pack_tag 'hello-world-bundle' %>
-    <%= stylesheet_pack_tag 'hello-world-bundle' %>
+    <%= javascript_pack_tag 'main-bundle' %>
   </head>
 
   <body>
-    <%= yield %>
+
+    <header></header>
+
+    <nav></nav>
+
+    <main>
+      <%= yield %>
+    </main>
+
+    <footer></footer>
+
+    
   </body>
 </html>
 

@@ -3,10 +3,9 @@
 # subclass < superclass
 # ApplicationController class inherits functionality from ActionController::Base 
 
-class HelloWorldController < ApplicationController
-  layout "hello_world"
+class MainController < ApplicationController
+  layout "main"
 
-  def index
-    @hello_world_props = { name: "Stranger" }
+  def index 
   end
 end
