@@ -3,20 +3,22 @@
   <head>
     <title>Quoted</title>
     <%= csrf_meta_tags %>
-    <%= javascript_pack_tag 'main-bundle' %>
+    <%= javascript_pack_tag 'nav-bundle', 'main-bundle' %>
   </head>
 
   <body>
 
-    <header></header>
+    <header>header</header>
 
-    <nav></nav>
+    <nav>
+      <%= yield :nav %>
+    </nav>
 
     <main>
-      <%= yield %>
+      <%= yield :main %>
     </main>
 
-    <footer></footer>
+    <footer>footer</footer>
 
     
   </body>

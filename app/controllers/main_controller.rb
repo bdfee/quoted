@@ -4,8 +4,9 @@
 # ApplicationController class inherits functionality from ActionController::Base 
 
 class MainController < ApplicationController
-  layout "main"
+  layout "base"
 
   def index 
   end
+  
 end
