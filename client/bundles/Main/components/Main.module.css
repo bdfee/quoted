@@ -2,4 +2,10 @@
     display: grid;
     grid-template-columns: 20vw 60vw;
     grid-template-rows: 40vh 20vh 20vh;
+    background-color: whitesmoke;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
 }
