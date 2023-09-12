@@ -18,6 +18,8 @@ gem "puma", "~> 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+gem "ruby-openai"
+
 gem 'dotenv-rails', groups: [:development, :test] 
 
 # Use Redis adapter to run Action Cable in production
