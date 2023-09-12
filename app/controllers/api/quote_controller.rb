@@ -47,8 +47,6 @@ module Api
       end
   
       def get_false_quote(quote, author)
-        # client = OpenAI::Client.new
-  
         input_string = 'rewrite: ' + quote + 'in the style of ' + author
 
         res = @@openai_client.chat(
