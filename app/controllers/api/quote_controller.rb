@@ -4,13 +4,17 @@ module Api
       require 'json'
       require 'openai'
   
+      # init client and store as class var
       @@openai_client ||= OpenAI::Client.new
 
       def index
+        # returns content and author
         quote = get_quote
   
+        # returns snippet and image url
         wiki = get_wiki(quote['author'])
   
+        # returns the false quote
         false_quote = get_false_quote(quote['content'], quote['author'])
   
         render json: {
@@ -28,6 +32,7 @@ module Api
         uri = URI('https://api.quotable.io/quotes/random')
         res = Net::HTTP.get(uri)
         data = JSON.parse(res)
+
         {
           "content" => data[0]['content'],
           "author" => data[0]['author']
@@ -38,11 +43,11 @@ module Api
         uri = URI("https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&titles=#{URI.encode_www_form_component(author)}&prop=extracts|pageimages&exintro&explaintext&pithumbsize=300")
         res = Net::HTTP.get(uri)
         data = JSON.parse(res)
-  
-        page_id = data['query']['pages'].values.first['pageid'].to_i
+
+        # return the first sentence from extract and thumbnail source
         {
-          "snippet" => data['query']['pages'][page_id.to_s]['extract'].split('. ')[0] + '.',
-          "image_url" => data['query']['pages'][page_id.to_s]['thumbnail']&.fetch('source', nil)
+          "snippet" => data['query']['pages'].values.first['extract'].split('. ')[0] + '.',
+          "image_url" => data['query']['pages'].values.first['thumbnail']&.fetch('source', nil)
         }
       end
   
