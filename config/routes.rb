@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'quoted', to: 'main#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
+  get 'api/new_quote', to: 'api/quote#index'
   # Defines the root path route "/" to be handled by hello_world_controller.rb action index
   # root 'main#index'
 end
