@@ -62,6 +62,7 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
     const [trueIdx, setTrueIdx] = useState(null);
     const [guessIdx, setGuessIdx] = useState(null);
     const [quotes, setQuotes] = useState([]);
+
     
     useEffect(() => {
       if (Math.random() < 0.5) {
@@ -73,10 +74,28 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
       }
     }, []);
     
-    const handleClick = (idx) => {
+    const handleClick = async (idx) => {
       setGuessIdx(idx);
+      const token = window.localStorage.getItem('quoted-session')
+      if (token) {
+        updateScore(idx, token)
+      }
     };
     
+    const updateScore = async (idx, token) => {
+      fetch('/api/scores', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+        body: JSON.stringify({
+          score_type: idx === trueIdx ? 'correct' : 'incorrect'
+        })
+      })
+    }
+
     const reveal = (idx) => ({ backgroundColor: idx === trueIdx ? 'green' : 'red' });
   
     return quotes.map((quote, idx) => (
@@ -108,18 +127,18 @@ const Main = () => {
         <div className={style.container}>    
             <div className={style.main}>
                 {quote.length > 0 && (
-                    <>
-                        <Author name={quote[0].author} imageUrl={quote[0].image_url} snippet={quote[0].snippet} />
-                        <div
-                            style={{
-                                gridRowStart: 2,
-                                gridColumnStart: 1,
-                                gridColumnEnd: 3,
-                            }}
-                        >
-                            <Quotes quote={quote[0].quote} falseQuote={quote[0].false_quote} />
-                        </div>
-                    </>
+                  <>
+                      <Author name={quote[0].author} imageUrl={quote[0].image_url} snippet={quote[0].snippet} />
+                      <div
+                          style={{
+                              gridRowStart: 2,
+                              gridColumnStart: 1,
+                              gridColumnEnd: 3,
+                          }}
+                      >
+                          <Quotes quote={quote[0].quote} falseQuote={quote[0].false_quote} />
+                      </div>
+                  </>
                 )}
             </div>
         </div>

@@ -7,7 +7,7 @@ module Api
             user = User.find_by(username: params[:session][:username])
 
             if user && user.authenticate(params[:session][:password])
-                # create jwt
+                # create jwt with user_id payload
                 token = encode_token(user_id: user.id)
 
                 render json: { token: token }, status: :ok    
