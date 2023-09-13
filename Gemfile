@@ -22,6 +22,7 @@ gem "ruby-openai"
 
 gem 'dotenv-rails', groups: [:development, :test] 
 
+gem 'bcrypt', '~> 3.1', require: 'bcrypt'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
 

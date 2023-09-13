@@ -1,4 +1,5 @@
 import React from 'react'
+import CreateAccount from './CreateAccount'
 import style from './Nav.module.css'
 
 const Nav = () => {
@@ -11,7 +12,7 @@ const Nav = () => {
             style={{marginLeft: '2vw'}}
         >quoted</h2>
         <div>score</div>
-        <div>login/account</div>
+        <CreateAccount />
     </div>
  )
 }
