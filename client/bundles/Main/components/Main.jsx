@@ -127,18 +127,18 @@ const Main = () => {
         <div className={style.container}>    
             <div className={style.main}>
                 {quote.length > 0 && (
-                    <>
-                        <Author name={quote[0].author} imageUrl={quote[0].image_url} snippet={quote[0].snippet} />
-                        <div
-                            style={{
-                                gridRowStart: 2,
-                                gridColumnStart: 1,
-                                gridColumnEnd: 3,
-                            }}
-                        >
-                            <Quotes quote={quote[0].quote} falseQuote={quote[0].false_quote} />
-                        </div>
-                    </>
+                  <>
+                      <Author name={quote[0].author} imageUrl={quote[0].image_url} snippet={quote[0].snippet} />
+                      <div
+                          style={{
+                              gridRowStart: 2,
+                              gridColumnStart: 1,
+                              gridColumnEnd: 3,
+                          }}
+                      >
+                          <Quotes quote={quote[0].quote} falseQuote={quote[0].false_quote} />
+                      </div>
+                  </>
                 )}
             </div>
         </div>
