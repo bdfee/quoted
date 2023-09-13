@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Login = () => {
+const Login = ({ setActiveSession }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -44,17 +44,19 @@ const Login = () => {
         console.log(data);
         const { token } = data;
         localStorage.setItem('quoted-session', token);
+        setFormData({
+            username: '',
+            password: '',
+          });
+        setActiveSession(true)
       })
       .catch((error) => console.error(error));
 
-    setFormData({
-      username: '',
-      password: '',
-    });
+
   };
 
   return (
-    <div>
+    <>
       <h2 onClick={() => setCollapsed(!collapsed)}>Log In</h2>
       <form
         onSubmit={handleSubmit}
@@ -85,9 +87,9 @@ const Login = () => {
             required
           />
         </div>
-        <button type="submit">Log In</button>
+        <button type="submit">LogIn</button>
       </form>
-    </div>
+    </>
   );
 };
 

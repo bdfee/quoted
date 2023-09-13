@@ -19,7 +19,6 @@ const CreateAccount = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -53,7 +52,7 @@ const CreateAccount = () => {
   };
 
   return (
-    <div>
+    <>
       <h2
         onClick={() => setCollapsed(!collapsed)}
       >Sign Up</h2>
@@ -85,9 +84,9 @@ const CreateAccount = () => {
             required
           />
         </div>
-        <button type="submit">Sign Up</button>
+        <button type="submit">SignUp</button>
       </form>
-    </div>
+    </>
   );
 };
 

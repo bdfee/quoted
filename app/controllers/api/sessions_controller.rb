@@ -3,14 +3,15 @@ module Api
         require 'jwt'
 
         def create
+            #  user model method
             user = User.find_by(username: params[:session][:username])
-            if user && user.authenticate(params[:session][:password])
 
+            if user && user.authenticate(params[:session][:password])
+                # create jwt
                 token = encode_token(user_id: user.id)
 
                 render json: { token: token }, status: :ok    
             else
-                # Handle invalid sign-in attempt
                 render json: { error: 'Invalid username or password' }, status: :unprocessable_entity
             end
         end

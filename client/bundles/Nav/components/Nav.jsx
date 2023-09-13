@@ -23,24 +23,33 @@ const Nav = () => {
             className={style.nav}
         >
             <h2
-                style={{marginLeft: '2vw'}}
+                style={{
+                    marginLeft: '2vw',
+                    textJustify: 'center'
+                }}
             >
                 quoted
             </h2>
             <div>score</div>
             <div style={{
-                display: 'flex'
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textJustify: 'center'
             }}>
                 {
                     activeSession 
                     ?   <>
                             <h2>logged in</h2>
-                            <button type="button" onClick={handleSignOut}>logout</button>
+                            <div>
+                                <button type="button" onClick={handleSignOut}>logout</button>
+                            </div>
+                            
                         </>
                     
                     :   <>            
                             <CreateAccount />
-                            <Login />
+                            <Login setActiveSession={setActiveSession}/>
                         </>
                 }
             </div>

@@ -1,16 +1,14 @@
 module Api
     class UsersController < ApplicationController
         def create
+            # username password auto hashed into password_digest
+            # has_secure_password macro in model
             @user = User.new(user_params)
   
-            Rails.logger.info(@user)
-            
             if @user.save
                 render json: @user, status: :created
-                # redirect_to root_path, notice: 'Account created successfully!'
             else
                 render json: { errors: @user.errors.full_message }, status: :unprocessable_entity
-                # render 'new'
             end
         end
   
