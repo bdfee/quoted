@@ -7,10 +7,11 @@ const Nav = () => {
     <div
         className={style.nav}
     >
-        <div>title</div>
-        <div>span space</div>
+        <h2
+            style={{marginLeft: '2vw'}}
+        >quoted</h2>
         <div>score</div>
-        <div>account</div>
+        <div>login/account</div>
     </div>
  )
 }
