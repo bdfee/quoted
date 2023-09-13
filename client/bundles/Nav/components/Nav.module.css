@@ -1,7 +1,7 @@
 .nav {
     border: 1px solid black;
     display: grid;
-    grid-template-columns: 70vw 20vw 10vw;
+    grid-template-columns: 60vw 20vw 20vw;
     grid-template-rows: 10vh;
     background-color: lightblue;
 }

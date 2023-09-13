@@ -12,6 +12,8 @@ gem "sprockets-rails"
 # Use pg as the database for Active Record
 gem "pg", "~> 1.1"
 
+gem 'jwt', '~> 1.5', '>= 1.5.4'
+
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", "~> 5.0"
 
@@ -22,6 +24,7 @@ gem "ruby-openai"
 
 gem 'dotenv-rails', groups: [:development, :test] 
 
+gem 'bcrypt', '~> 3.1', require: 'bcrypt'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", "~> 4.0"
 

@@ -8,6 +8,10 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   get 'api/new_quote', to: 'api/quote#index'
+
+  post 'api/users', to: 'api/users#create'
+
+  post 'api/signin', to: 'api/sessions#create'
   # Defines the root path route "/" to be handled by hello_world_controller.rb action index
   # root 'main#index'
 end
