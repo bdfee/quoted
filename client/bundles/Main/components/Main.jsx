@@ -1,67 +1,126 @@
 import React from 'react'
 import style from './Main.module.css'
+import { useState, useEffect } from 'react'
 
 
-const Author = () => {
+const Author = ({author, imageUrl, snippet}) => {
     return ( 
         <>
             <div
                 style={{
                     border: '1px solid black',
                     width: '20vw',
-                    height: '40vh'
+                    height: '40vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden'
                 }}>
-                <img>{/* image */}</img>
-                image
+                <img
+                    src={imageUrl}
+                    style={{
+                        maxWidth: '100%', 
+                        maxHeight: '100%',
+                        objectFit: 'contain'
+                      }}
+                    alt="Author"
+                ></img>
             </div>
             <div
                 style={{
+                    fontSize: '25px',
                     border: '1px solid black',
                 }}
                 >
-                <h3>John Doe</h3>
-                <p>10/03/1946 - 2/21/1985</p>
-                <p>bio: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+                <h3>{author}</h3>
+                <p>{snippet}</p>
             </div>
         </>
     )
 }
 
-const Quote = () => {
-    return (                
-        <div
-            style={{
-                border: '1px solid black',
-                height: '20vh'
-            }}
-        >
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua"
-        </div>
-    )
-}
-
-const Quotes = () => {
+const Quote = ({ quote, handleClick, revealStyle, index }) => {
+    const baseStyle = {
+      border: '1px solid black',
+      height: '20vh',
+      fontSize: '25px'
+    };
+  
+    const mergedStyle = { ...baseStyle, ...revealStyle };
+  
     return (
-        <div
-            style={{
-                gridRowStart: 2,
-                gridColumnStart: 1,
-                gridColumnEnd: 3,
-            }}
-        >
-            <Quote />
-            <Quote />
-        </div>
-    )
-}
+      <div
+        style={mergedStyle}
+        onClick={() => handleClick(index)} // Pass the index directly to handleClick
+      >
+        {quote}
+      </div>
+    );
+  };
+  
+  const Quotes = ({ quote, falseQuote }) => {
+    const [trueIdx, setTrueIdx] = useState(null);
+    const [guessIdx, setGuessIdx] = useState(null);
+    const [quotes, setQuotes] = useState([]);
+    
+    useEffect(() => {
+      if (Math.random() < 0.5) {
+        setTrueIdx(0);
+        setQuotes([`"${quote}"`, falseQuote]);
+      } else {
+        setTrueIdx(1);
+        setQuotes([falseQuote, `"${quote}"`]);
+      }
+    }, []);
+    
+    const handleClick = (idx) => {
+      setGuessIdx(idx);
+    };
+    
+    const reveal = (idx) => ({ backgroundColor: idx === trueIdx ? 'green' : 'red' });
+  
+    return quotes.map((quote, idx) => (
+      <Quote
+        quote={quote}
+        key={'quote-' + idx}
+        handleClick={handleClick}
+        revealStyle={guessIdx !== null ? reveal(idx) : {}}
+        index={idx} // Pass the index to the Quote component
+      />
+    ));
+  };
 
 
 const Main = () => {
+    const [quote, setQuote] = useState([])
+
+    useEffect(() => {
+        fetch('/api/new_quote', {
+            method: 'GET'
+        })
+        .then(response => response.json())
+        .then((result) => {
+            setQuote([result]);
+        })
+    }, [])
+
     return (
         <div className={style.container}>    
             <div className={style.main}>
-                <Author />
-                <Quotes />
+                {quote.length > 0 && (
+                    <>
+                        <Author name={quote[0].author} imageUrl={quote[0].image_url} snippet={quote[0].snippet} />
+                        <div
+                            style={{
+                                gridRowStart: 2,
+                                gridColumnStart: 1,
+                                gridColumnEnd: 3,
+                            }}
+                        >
+                            <Quotes quote={quote[0].quote} falseQuote={quote[0].false_quote} />
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     )
