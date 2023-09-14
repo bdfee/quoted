@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_14_142301) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_14_155012) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "btree_gist"
@@ -48,6 +48,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_142301) do
     t.integer "incorrect_responses", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "ranking_score", precision: 10, scale: 2, default: "0.0"
     t.index ["user_id"], name: "index_scores_on_user_id"
   end
 
