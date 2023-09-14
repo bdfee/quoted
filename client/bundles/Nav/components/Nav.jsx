@@ -20,11 +20,50 @@ const SideMenu = ({ setActiveSession }) => {
       >
         <Login setActiveSession={setActiveSession} />
         <CreateAccount />
-        <div>Rankings</div>
+        <Rankings />
       </div>
     </div>
   )
 }
+
+const Rankings = () => {
+  const [rankings, setRankings] = useState([])
+  const [collapsed, setCollapsed] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/rankings', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      }
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => Promise.reject(data));
+        }
+      })
+      .then((data) => {
+        setRankings(data)
+      })
+      .catch((error) => console.error(error));
+  }, [])
+
+  return (
+    <div>
+      <h2
+        onClick={() => setCollapsed(!collapsed)}
+      >rankings</h2>
+      <ol
+        style={{ display: collapsed? 'none' : 'block'}}
+      >
+        {rankings.map(ranking => <li key={ranking.username}> {ranking.username + '-' + ranking.ranking_score}</li>)}
+      </ol>
+    </div>
+  )
+} 
 
 const GlobalScore = ({ globalScore }) => {
   if (globalScore) {
@@ -54,6 +93,7 @@ const Nav = () => {
   const [activeSession, setActiveSession] = useState(false);
   const [userScore, setUserScore] = useState(null);
   const [globalScore, setGlobalScore] = useState(null)
+  const [user, setUser] = useState('')
 
   useEffect(() => {
     if (window.localStorage.getItem('quoted-session')) {
@@ -71,6 +111,7 @@ const Nav = () => {
         if (data) {
           console.log('Received data from ScoresChannel:', data);
           data.user_score && setUserScore(data.user_score);
+          data.user_score && setUser(data.user_score.user_id);
           data.global_score && setGlobalScore(data.global_score)
         }
       },
@@ -94,7 +135,7 @@ const Nav = () => {
           textJustify: 'center',
         }}
       >
-        anon or username
+        {activeSession ? 'ID: ' + user : 'anonymous'}
       </h2>
       <div style={{display: 'flex', justifyContent:'space-around'}}>
         <GlobalScore globalScore={globalScore} />

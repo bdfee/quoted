@@ -16,5 +16,7 @@ Rails.application.routes.draw do
   post 'api/scores', to: 'api/scores#increment'
   # Defines the root path route "/" to be handled by hello_world_controller.rb action index
   # root 'main#index'
+
+  get 'api/rankings', to: 'api/rankings#index'
 end
 
