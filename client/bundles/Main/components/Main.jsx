@@ -77,19 +77,24 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
     const handleClick = async (idx) => {
       setGuessIdx(idx);
       const token = window.localStorage.getItem('quoted-session')
-      if (token) {
-        updateScore(idx, token)
-      }
+      updateScore(idx, token)
     };
     
     const updateScore = async (idx, token) => {
+
+      // global headers
+      const headers = {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      }
+      // if logged in user
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`
+      }
+
       fetch('/api/scores', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        },
+        headers,
         body: JSON.stringify({
           score_type: idx === trueIdx ? 'correct' : 'incorrect'
         })
