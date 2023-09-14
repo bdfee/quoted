@@ -1,0 +1,2 @@
+class GlobalScore < ApplicationRecord
+end
