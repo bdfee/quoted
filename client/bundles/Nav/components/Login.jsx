@@ -61,7 +61,7 @@ const Login = ({ setActiveSession }) => {
       <form
         onSubmit={handleSubmit}
         style={{
-          visibility: collapsed ? 'hidden' : 'visible',
+          display: collapsed ? 'none' : 'block',
           backgroundColor: 'whitesmoke',
         }}
       >

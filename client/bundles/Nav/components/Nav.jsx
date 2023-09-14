@@ -4,6 +4,52 @@ import Login from './Login';
 import style from './Nav.module.css';
 import scoresConsumer from './scoresConsumer';
 
+const SideMenu = ({ setActiveSession }) => {
+  const [collapsed, setCollapsed] = useState(false)
+  return (
+    <div
+      style={{ backgroundColor: 'white', width: '10vw'}}>
+      <h2 
+        onClick={() => setCollapsed(!collapsed)}
+      >
+        menu
+      </h2>
+      <div
+        style={{ display: collapsed ? 'none' : 'flex', flexDirection:'column', backgroundColor: 'white', zIndex:'100', position: 'absolute', width: '10vw' }}
+        
+      >
+        <Login setActiveSession={setActiveSession} />
+        <CreateAccount />
+        <div>Rankings</div>
+      </div>
+    </div>
+  )
+}
+
+const GlobalScore = ({ globalScore }) => {
+  if (globalScore) {
+    return (
+      <p
+        style={{fontSize: '25px', textJustify: 'center', textAlign: 'center'}}
+      >
+        {"Humans: " + globalScore.correct_responses + " | Machine: " + globalScore.incorrect_responses }
+      </p>
+    )
+  }
+}
+
+const UserScore = ({ userScore }) => {
+  if (userScore) {
+    return (
+      <p
+        style={{fontSize: '25px', textJustify: 'center', textAlign: 'center'}}
+      >
+        {"Humans: " + userScore.correct_responses + " | Machine: " + userScore.incorrect_responses }
+      </p>
+    )
+  }
+}
+
 const Nav = () => {
   const [activeSession, setActiveSession] = useState(false);
   const [userScore, setUserScore] = useState(null);
@@ -48,23 +94,13 @@ const Nav = () => {
           textJustify: 'center',
         }}
       >
-        quoted
+        anon or username
       </h2>
-      <h2
-        style={{fontSize: '25px', textJustify: 'center', textAlign: 'center'}}
-      >
-        {userScore && "Human: " + userScore.correct_responses + " | Machine: " + userScore.incorrect_responses } <br></br>
-        {globalScore && "Humans: " + globalScore.correct_responses + " | Machine: " + globalScore.incorrect_responses}
-      
-      </h2>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textJustify: 'center',
-        }}
-      >
+      <div style={{display: 'flex', justifyContent:'space-around'}}>
+        <GlobalScore globalScore={globalScore} />
+        <UserScore userScore={userScore} />
+      </div>
+      <div>
         {activeSession ? (
           <>
             <h2>logged in</h2>
@@ -75,10 +111,7 @@ const Nav = () => {
             </div>
           </>
         ) : (
-          <>
-            <CreateAccount />
-            <Login setActiveSession={setActiveSession} />
-          </>
+        <SideMenu setActiveSession={setActiveSession}/>
         )}
       </div>
     </div>
