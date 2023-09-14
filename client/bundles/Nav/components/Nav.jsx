@@ -6,7 +6,8 @@ import scoresConsumer from './scoresConsumer';
 
 const Nav = () => {
   const [activeSession, setActiveSession] = useState(false);
-  const [score, setScore] = useState(null);
+  const [userScore, setUserScore] = useState(null);
+  const [globalScore, setGlobalScore] = useState(null)
 
   useEffect(() => {
     if (window.localStorage.getItem('quoted-session')) {
@@ -21,9 +22,10 @@ const Nav = () => {
       },
       received(data) {
 
-        if (data && data.score) {
+        if (data) {
           console.log('Received data from ScoresChannel:', data);
-          setScore(data.score);
+          data.user_score && setUserScore(data.user_score);
+          data.global_score && setGlobalScore(data.global_score)
         }
       },
     });
@@ -50,7 +52,11 @@ const Nav = () => {
       </h2>
       <h2
         style={{fontSize: '25px', textJustify: 'center', textAlign: 'center'}}
-      >{score && "Human: " + score.correct_responses + " | Machine: " + score.incorrect_responses}</h2>
+      >
+        {userScore && "Human: " + userScore.correct_responses + " | Machine: " + userScore.incorrect_responses } <br></br>
+        {globalScore && "Humans: " + globalScore.correct_responses + " | Machine: " + globalScore.incorrect_responses}
+      
+      </h2>
       <div
         style={{
           display: 'flex',
