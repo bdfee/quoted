@@ -23,6 +23,7 @@ module Api
             end
 
                 score.save
+                ActionCable.server.broadcast("scores_channel", { score: score })
   
                 render json: { message: 'Score updated' }, status: :ok
             else
