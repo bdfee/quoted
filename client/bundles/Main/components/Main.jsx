@@ -1,7 +1,10 @@
 import React from 'react'
 import style from './Main.module.css'
 import { useState, useEffect } from 'react'
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
+const queryClient = new QueryClient()
 
 const Author = ({author, imageUrl, snippet}) => {
     return ( 
@@ -114,40 +117,76 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
     ));
   };
 
+  
 
-const Main = () => {
-    const [quote, setQuote] = useState([])
+const fetchQuotes = async () => {
+    const res = await fetch('/api/new_quote', {
+      method: 'GET'
+    })
+    const data = await res.json()
+    return data
+  }
 
-    useEffect(() => {
-        fetch('/api/new_quote', {
-            method: 'GET'
-        })
-        .then(response => response.json())
-        .then((result) => {
-            setQuote([result]);
-        })
-    }, [])
+const Game = () => {
+  const [quoteQueue, setQuoteQueue] = useState([])
+  const queryClient = useQueryClient()
 
+
+  useQuery({
+    enabled: quoteQueue.length < 3,
+    queryKey: ['quotes'], 
+    queryFn: fetchQuotes,
+    onSuccess: (quote) => setQuoteQueue(quoteQueue.concat(quote)),
+    dependencies: [quoteQueue]
+  })  
+
+  const handleClick = async () => {
+    // progress queue
+    setQuoteQueue(prevQueue => {
+      const [ _, ...progressedQueue ] = prevQueue
+      return progressedQueue
+    })
+    await queryClient.prefetchQuery({
+      queryKey: ['quotes'],
+      queryFn: fetchQuotes
+    })
+
+  }
+
+  if (!quoteQueue.length) {
+    return <div>loading</div>
+  } else {
+
+    console.log(quoteQueue)
     return (
-        <div className={style.container}>    
-            <div className={style.main}>
-                {quote.length > 0 && (
-                  <>
-                      <Author name={quote[0].author} imageUrl={quote[0].image_url} snippet={quote[0].snippet} />
-                      <div
-                          style={{
-                              gridRowStart: 2,
-                              gridColumnStart: 1,
-                              gridColumnEnd: 3,
-                          }}
-                      >
-                          <Quotes quote={quote[0].quote} falseQuote={quote[0].false_quote} />
-                      </div>
-                  </>
-                )}
-            </div>
+      <div className={style.main}>
+        <Author name={quoteQueue[0].author} imageUrl={quoteQueue[0].image_url} snippet={quoteQueue[0].snippet} />
+        <button onClick={handleClick}>prefetch</button> 
+        <div
+            style={{
+                gridRowStart: 2,
+                gridColumnStart: 1,
+                gridColumnEnd: 3,
+            }}
+        >
+          <Quotes quote={quoteQueue[0].quote} falseQuote={quoteQueue[0].false_quote} />
         </div>
+      </div>
     )
+  }
 }
+
+
+
+
+const Main = () => (
+  <QueryClientProvider client={queryClient}> 
+      <div className={style.container}>  
+        <Game />
+      </div>
+      <ReactQueryDevtools initialIsOpen={true} />
+  </QueryClientProvider>
+)
+
 
 export default Main
