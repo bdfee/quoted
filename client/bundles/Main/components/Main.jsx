@@ -1,6 +1,6 @@
 import React from 'react'
 import style from './Main.module.css'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
@@ -62,21 +62,24 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
   };
   
   const Quotes = ({ quote, falseQuote, progressQueue }) => {
-    const [guessIdx, setGuessIdx] = useState(null);
     const [randomizer, setRandomizer] = useState(Math.random())
+    const [guessed, setGuessed] = useState(false)
     
-    const updateScore = async (idx, token) => {
+    const updateScore = async (idx) => {
 
       const isCorrect =
-        (randomizer < 0.5 && guessIdx === 0) ||
-        (randomizer >= 0.5 && guessIdx === 1);
+        (randomizer < 0.5 && idx === 0) ||
+        (randomizer >= 0.5 && idx === 1);
 
       // global headers
       const headers = {
         'Content-Type': 'application/json',
         'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
       }
+
       // if logged in user
+      const token = window.localStorage.getItem('quoted-session')
+
       if (token) {
         headers['Authorization'] = `Bearer ${token}`
       }
@@ -87,11 +90,6 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
         body: JSON.stringify({
           score_type: isCorrect ? 'correct' : 'incorrect'
         })
-      }).then(res => {
-        if (res.ok) {
-          // setRandomizer(Math.random())
-          // setGuessIdx(null)
-        }
       })
     }
 
@@ -103,21 +101,19 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
           : 'red',
     });
     
-    const quotesArr = randomizer > 0.5 ? [quote, falseQuote + 'false'] : [falseQuote, quote]
+    const quotesArr = randomizer > 0.5 ? [quote, falseQuote] : [falseQuote, quote]
 
     const handleClick = async (idx) => {
-      setGuessIdx(idx);
-      const token = window.localStorage.getItem('quoted-session')
-      updateScore(idx, token)
+      setGuessed(true)
+      updateScore(idx)
     };
 
     const handleProgressQueue = () => {
       setRandomizer(Math.random())
-      setGuessIdx(null)
       progressQueue()
+      setGuessed(false)
     }
-
-    console.log(randomizer)
+    
     return (
       <>
         <div>
@@ -130,8 +126,8 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
             quote={quote}
             key={'quote-' + idx}
             handleClick={handleClick}
-            revealStyle={guessIdx !== null ? reveal(idx) : {}}
-            index={idx} // Pass the index to the Quote component
+            revealStyle={guessed ? reveal(idx) : {}}
+            index={idx}
           />
         ))}
       </>
