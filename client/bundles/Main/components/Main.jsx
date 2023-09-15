@@ -1,6 +1,6 @@
 import React from 'react'
 import style from './Main.module.css'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
@@ -61,29 +61,15 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
     );
   };
   
-  const Quotes = ({ quote, falseQuote }) => {
-    const [trueIdx, setTrueIdx] = useState(null);
+  const Quotes = ({ quote, falseQuote, progressQueue }) => {
     const [guessIdx, setGuessIdx] = useState(null);
-    const [quotes, setQuotes] = useState([]);
-
-    
-    useEffect(() => {
-      if (Math.random() < 0.5) {
-        setTrueIdx(0);
-        setQuotes([`"${quote}"`, falseQuote]);
-      } else {
-        setTrueIdx(1);
-        setQuotes([falseQuote, `"${quote}"`]);
-      }
-    }, []);
-    
-    const handleClick = async (idx) => {
-      setGuessIdx(idx);
-      const token = window.localStorage.getItem('quoted-session')
-      updateScore(idx, token)
-    };
+    const [randomizer, setRandomizer] = useState(Math.random())
     
     const updateScore = async (idx, token) => {
+
+      const isCorrect =
+        (randomizer < 0.5 && guessIdx === 0) ||
+        (randomizer >= 0.5 && guessIdx === 1);
 
       // global headers
       const headers = {
@@ -99,81 +85,119 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          score_type: idx === trueIdx ? 'correct' : 'incorrect'
+          score_type: isCorrect ? 'correct' : 'incorrect'
         })
+      }).then(res => {
+        if (res.ok) {
+          // setRandomizer(Math.random())
+          // setGuessIdx(null)
+        }
       })
     }
 
-    const reveal = (idx) => ({ backgroundColor: idx === trueIdx ? 'green' : 'red' });
-  
-    return quotes.map((quote, idx) => (
-      <Quote
-        quote={quote}
-        key={'quote-' + idx}
-        handleClick={handleClick}
-        revealStyle={guessIdx !== null ? reveal(idx) : {}}
-        index={idx} // Pass the index to the Quote component
-      />
-    ));
+    const reveal = (idx) => ({
+      backgroundColor:
+        (randomizer < 0.5 && idx === 0) ||
+        (randomizer >= 0.5 && idx === 1)
+          ? 'green'
+          : 'red',
+    });
+    
+    const quotesArr = randomizer > 0.5 ? [quote, falseQuote + 'false'] : [falseQuote, quote]
+
+    const handleClick = async (idx) => {
+      setGuessIdx(idx);
+      const token = window.localStorage.getItem('quoted-session')
+      updateScore(idx, token)
+    };
+
+    const handleProgressQueue = () => {
+      setRandomizer(Math.random())
+      setGuessIdx(null)
+      progressQueue()
+    }
+
+    console.log(randomizer)
+    return (
+      <>
+        <div>
+          <button
+            onClick={handleProgressQueue}
+          >next quote</button>
+        </div>
+        {quotesArr.map((quote, idx) => (
+          <Quote
+            quote={quote}
+            key={'quote-' + idx}
+            handleClick={handleClick}
+            revealStyle={guessIdx !== null ? reveal(idx) : {}}
+            index={idx} // Pass the index to the Quote component
+          />
+        ))}
+      </>
+    )
   };
 
   
 
-const fetchQuotes = async () => {
-    const res = await fetch('/api/new_quote', {
-      method: 'GET'
-    })
-    const data = await res.json()
-    return data
+  const fetchQuotes = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch('/api/new_quote', {
+          method: 'GET',
+        });
+        const data = await res.json();
+        resolve(data);
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
 const Game = () => {
-  const [quoteQueue, setQuoteQueue] = useState([])
+  const quoteQueueRef = useRef([])
+  const [quote, setQuote] = useState({})
   const queryClient = useQueryClient()
-
+    
+  const fetchNewQuote = async () => queryClient.fetchQuery(['quotes'], fetchQuotes)
 
   useQuery({
-    enabled: quoteQueue.length < 3,
     queryKey: ['quotes'], 
     queryFn: fetchQuotes,
-    onSuccess: (quote) => setQuoteQueue(quoteQueue.concat(quote)),
-    dependencies: [quoteQueue]
-  })  
+    onSuccess: (quote) => addQuoteToQueue(quote),
+  })
+
+  useQuery({
+    enabled: quoteQueueRef.current.length < 2,
+    queryKey: ['quote-queue-primer'],
+    queryFn: fetchQuotes,
+    onSuccess: (quote) => addQuoteToQueue(quote)
+  })
+
+  const addQuoteToQueue = (quoteObj) => quoteQueueRef.current.push(quoteObj)
+
+  const progressQueue = () => setQuote(quoteQueueRef.current.shift())
 
   const handleClick = async () => {
-    // progress queue
-    setQuoteQueue(prevQueue => {
-      const [ _, ...progressedQueue ] = prevQueue
-      return progressedQueue
-    })
-    await queryClient.prefetchQuery({
-      queryKey: ['quotes'],
-      queryFn: fetchQuotes
-    })
-
+    progressQueue()
+    fetchNewQuote()
   }
 
-  if (!quoteQueue.length) {
-    return <div>loading</div>
-  } else {
-
-    console.log(quoteQueue)
-    return (
-      <div className={style.main}>
-        <Author name={quoteQueue[0].author} imageUrl={quoteQueue[0].image_url} snippet={quoteQueue[0].snippet} />
-        <button onClick={handleClick}>prefetch</button> 
-        <div
-            style={{
-                gridRowStart: 2,
-                gridColumnStart: 1,
-                gridColumnEnd: 3,
-            }}
-        >
-          <Quotes quote={quoteQueue[0].quote} falseQuote={quoteQueue[0].false_quote} />
-        </div>
+  return (
+    <div className={style.main}>
+      <Author name={quote.author} imageUrl={quote.image_url} snippet={quote.snippet} />
+      <button onClick={handleClick}>progress queue</button> 
+      <div
+          style={{
+              gridRowStart: 2,
+              gridColumnStart: 1,
+              gridColumnEnd: 3,
+          }}
+      >
+        <Quotes quote={quote.quote} falseQuote={quote.false_quote} progressQueue={handleClick} />
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 
