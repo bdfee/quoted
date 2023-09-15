@@ -1,7 +1,10 @@
 import React from 'react'
 import style from './Main.module.css'
-import { useState, useEffect } from 'react'
+import { useState, useRef } from 'react'
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
+const queryClient = new QueryClient()
 
 const Author = ({author, imageUrl, snippet}) => {
     return ( 
@@ -58,36 +61,25 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
     );
   };
   
-  const Quotes = ({ quote, falseQuote }) => {
-    const [trueIdx, setTrueIdx] = useState(null);
-    const [guessIdx, setGuessIdx] = useState(null);
-    const [quotes, setQuotes] = useState([]);
+  const Quotes = ({ quote, falseQuote, progressQueue }) => {
+    const [randomizer, setRandomizer] = useState(Math.random())
+    const [guessed, setGuessed] = useState(false)
+    
+    const updateScore = async (idx) => {
 
-    
-    useEffect(() => {
-      if (Math.random() < 0.5) {
-        setTrueIdx(0);
-        setQuotes([`"${quote}"`, falseQuote]);
-      } else {
-        setTrueIdx(1);
-        setQuotes([falseQuote, `"${quote}"`]);
-      }
-    }, []);
-    
-    const handleClick = async (idx) => {
-      setGuessIdx(idx);
-      const token = window.localStorage.getItem('quoted-session')
-      updateScore(idx, token)
-    };
-    
-    const updateScore = async (idx, token) => {
+      const isCorrect =
+        (randomizer < 0.5 && idx === 0) ||
+        (randomizer >= 0.5 && idx === 1);
 
       // global headers
       const headers = {
         'Content-Type': 'application/json',
         'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
       }
+
       // if logged in user
+      const token = window.localStorage.getItem('quoted-session')
+
       if (token) {
         headers['Authorization'] = `Bearer ${token}`
       }
@@ -96,58 +88,125 @@ const Quote = ({ quote, handleClick, revealStyle, index }) => {
         method: 'POST',
         headers,
         body: JSON.stringify({
-          score_type: idx === trueIdx ? 'correct' : 'incorrect'
+          score_type: isCorrect ? 'correct' : 'incorrect'
         })
       })
     }
 
-    const reveal = (idx) => ({ backgroundColor: idx === trueIdx ? 'green' : 'red' });
-  
-    return quotes.map((quote, idx) => (
-      <Quote
-        quote={quote}
-        key={'quote-' + idx}
-        handleClick={handleClick}
-        revealStyle={guessIdx !== null ? reveal(idx) : {}}
-        index={idx} // Pass the index to the Quote component
-      />
-    ));
+    const reveal = (idx) => ({
+      backgroundColor:
+        (randomizer < 0.5 && idx === 0) ||
+        (randomizer >= 0.5 && idx === 1)
+          ? 'green'
+          : 'red',
+    });
+    
+    const quotesArr = randomizer > 0.5 ? [quote, falseQuote] : [falseQuote, quote]
+
+    const handleClick = async (idx) => {
+      setGuessed(true)
+      updateScore(idx)
+    };
+
+    const handleProgressQueue = () => {
+      setRandomizer(Math.random())
+      progressQueue()
+      setGuessed(false)
+    }
+    
+    return (
+      <>
+        <div>
+          <button
+            onClick={handleProgressQueue}
+          >next quote</button>
+        </div>
+        {quotesArr.map((quote, idx) => (
+          <Quote
+            quote={quote}
+            key={'quote-' + idx}
+            handleClick={handleClick}
+            revealStyle={guessed ? reveal(idx) : {}}
+            index={idx}
+          />
+        ))}
+      </>
+    )
   };
 
+  
 
-const Main = () => {
-    const [quote, setQuote] = useState([])
+  const fetchQuotes = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const res = await fetch('/api/new_quote', {
+          method: 'GET',
+        });
+        const data = await res.json();
+        resolve(data);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
 
-    useEffect(() => {
-        fetch('/api/new_quote', {
-            method: 'GET'
-        })
-        .then(response => response.json())
-        .then((result) => {
-            setQuote([result]);
-        })
-    }, [])
+const Game = () => {
+  const quoteQueueRef = useRef([])
+  const [quote, setQuote] = useState({})
+  const queryClient = useQueryClient()
+    
+  const fetchNewQuote = async () => queryClient.fetchQuery(['quotes'], fetchQuotes)
 
-    return (
-        <div className={style.container}>    
-            <div className={style.main}>
-                {quote.length > 0 && (
-                  <>
-                      <Author name={quote[0].author} imageUrl={quote[0].image_url} snippet={quote[0].snippet} />
-                      <div
-                          style={{
-                              gridRowStart: 2,
-                              gridColumnStart: 1,
-                              gridColumnEnd: 3,
-                          }}
-                      >
-                          <Quotes quote={quote[0].quote} falseQuote={quote[0].false_quote} />
-                      </div>
-                  </>
-                )}
-            </div>
-        </div>
-    )
+  useQuery({
+    queryKey: ['quotes'], 
+    queryFn: fetchQuotes,
+    onSuccess: (quote) => addQuoteToQueue(quote),
+  })
+
+  useQuery({
+    enabled: quoteQueueRef.current.length < 2,
+    queryKey: ['quote-queue-primer'],
+    queryFn: fetchQuotes,
+    onSuccess: (quote) => addQuoteToQueue(quote)
+  })
+
+  const addQuoteToQueue = (quoteObj) => quoteQueueRef.current.push(quoteObj)
+
+  const progressQueue = () => setQuote(quoteQueueRef.current.shift())
+
+  const handleClick = async () => {
+    progressQueue()
+    fetchNewQuote()
+  }
+
+  return (
+    <div className={style.main}>
+      <Author name={quote.author} imageUrl={quote.image_url} snippet={quote.snippet} />
+      <button onClick={handleClick}>progress queue</button> 
+      <div
+          style={{
+              gridRowStart: 2,
+              gridColumnStart: 1,
+              gridColumnEnd: 3,
+          }}
+      >
+        <Quotes quote={quote.quote} falseQuote={quote.false_quote} progressQueue={handleClick} />
+      </div>
+    </div>
+  )
 }
+
+
+
+
+const Main = () => (
+  <QueryClientProvider client={queryClient}> 
+      <div className={style.container}>  
+        <Game />
+      </div>
+      <ReactQueryDevtools initialIsOpen={true} />
+  </QueryClientProvider>
+)
+
 
 export default Main
