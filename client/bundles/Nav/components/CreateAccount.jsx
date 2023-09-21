@@ -1,47 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { postCreateAccount } from '../services/postCreateAccount'
-
 
 const CreateAccount = ({ setUser }) => {
   const [collapsed, setCollapsed] = useState(true)
   const [formData, setFormData] = useState({
     username: '',
     password: '',
-  });
+  })
 
   const { mutate: mutateCreateAccount } = useMutation({
-    mutationFn: ({username, password}) => postCreateAccount(username, password),
+    mutationFn: ({ username, password }) =>
+      postCreateAccount(username, password),
     onSuccess: (_, variables) => {
       setUser(variables.username)
       setFormData({
         username: '',
-        password: ''
+        password: '',
       })
-    }
+    },
   })
 
   const handleInputChange = (event) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
-    });
-  };
+    })
+  }
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     mutateCreateAccount(formData)
-  };
+  }
 
   return (
     <>
-      <h2
-        onClick={() => setCollapsed(!collapsed)}
-      >Sign Up</h2>
-      <form onSubmit={handleSubmit}
-        style={{ 
-            display: collapsed ? 'none' : 'block',
-            backgroundColor: 'whitesmoke'
+      <h2 onClick={() => setCollapsed(!collapsed)}>Sign Up</h2>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: collapsed ? 'none' : 'block',
+          backgroundColor: 'whitesmoke',
         }}
       >
         <div>
@@ -69,7 +68,7 @@ const CreateAccount = ({ setUser }) => {
         <button type="submit">SignUp</button>
       </form>
     </>
-  );
-};
+  )
+}
 
-export default CreateAccount;
+export default CreateAccount

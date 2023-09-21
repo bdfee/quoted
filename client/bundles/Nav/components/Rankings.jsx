@@ -3,30 +3,30 @@ import { useQuery } from '@tanstack/react-query'
 import { getRankings } from '../services/getRankings'
 
 const Rankings = () => {
-    const [collapsed, setCollapsed] = useState(true)
-  
-    const { data: rankings, status } = useQuery({
-      queryFn: getRankings,
-      queryKey: ['rankings']
-    })
+  const [collapsed, setCollapsed] = useState(true)
 
-    if (status === 'loading' || status === 'error') {
-      return <div>{status}</div>
-    }
+  const { data: rankings, status } = useQuery({
+    queryFn: getRankings,
+    queryKey: ['rankings'],
+  })
 
-    return (
-      <div>
-        <h2
-          onClick={() => setCollapsed(!collapsed)}
-        >rankings</h2>
-        <ol
-          style={{ display: collapsed? 'none' : 'block'}}
-        >
-          {rankings.map(ranking => <li key={ranking.username}> {ranking.username + '-' + ranking.ranking_score}</li>)}
-        </ol>
-      </div>
-    )
-  } 
-  
+  if (status === 'loading' || status === 'error') {
+    return <div>{status}</div>
+  }
 
-  export default Rankings
+  return (
+    <div>
+      <h2 onClick={() => setCollapsed(!collapsed)}>rankings</h2>
+      <ol style={{ display: collapsed ? 'none' : 'block' }}>
+        {rankings.map((ranking) => (
+          <li key={ranking.username}>
+            {' '}
+            {ranking.username + '-' + ranking.ranking_score}
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
+export default Rankings
