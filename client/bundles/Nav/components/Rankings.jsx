@@ -1,30 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { getRankings } from '../services/getRankings'
 
 const Rankings = () => {
-    const [rankings, setRankings] = useState([])
     const [collapsed, setCollapsed] = useState(true)
   
-    useEffect(() => {
-      fetch('/api/rankings', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        }
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            return res.json().then((data) => Promise.reject(data));
-          }
-        })
-        .then((data) => {
-          setRankings(data)
-        })
-        .catch((error) => console.error(error));
-    }, [])
-  
+    const { data: rankings, status } = useQuery({
+      queryFn: getRankings,
+      queryKey: ['rankings']
+    })
+
+    if (status === 'loading' || status === 'error') {
+      return <div>{status}</div>
+    }
+
     return (
       <div>
         <h2

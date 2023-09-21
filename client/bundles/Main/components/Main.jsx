@@ -10,7 +10,7 @@ const queryClient = new QueryClient()
 const Main = () => (
   <QueryClientProvider client={queryClient}> 
     <Game />
-    <ReactQueryDevtools initialIsOpen={true} />
+    <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
 )
 

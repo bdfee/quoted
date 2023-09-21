@@ -3,7 +3,7 @@ import Login from './Login'
 import CreateAccount from './CreateAccount'
 import ScoreBoard from './ScoreBoard'
 
-const SideMenu = ({ setLoggedIn }) => {
+const SideMenu = ({ user, setUser }) => {
     const [collapsed, setCollapsed] = useState(true)
     return (
       <div
@@ -15,10 +15,9 @@ const SideMenu = ({ setLoggedIn }) => {
         </h2>
         <div
           style={{ display: collapsed ? 'none' : 'flex', flexDirection:'column', backgroundColor: 'white', zIndex:'100', position: 'absolute', width: '10vw' }}
-          
         >
-          <Login setLoggedIn={setLoggedIn} />
-          <CreateAccount />
+          <Login user={user} setUser={setUser} />
+          { !user ? <CreateAccount setUser={setUser} /> : null }
           <ScoreBoard />
         </div>
       </div>

@@ -1,29 +1,30 @@
 import React, { useEffect, useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 import style from './Nav.module.css';
 import UserSignature from './UserSignature';
 import SideMenu from './SideMenu';
 
-const Nav = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+const queryClient = new QueryClient()
+
+const Nav = () => { 
+  const [user, setUser] = useState('')
 
   useEffect(() => {
-    if (window.localStorage.getItem('quoted-session')) {
-      setLoggedIn(true);
+    const session = localStorage.getItem('quoted-session')
+    if (session) {
+      const { username } = JSON.parse(session)
+      setUser(username)
     }
-  }, []);
-
-
-  const handleSignOut = () => {
-    localStorage.removeItem('quoted-session');
-    setLoggedIn(false);
-  };
+  },[])
 
   return (
-      <div className={style.nav}>
-        <UserSignature setLoggedIn={setLoggedIn}/>
-        <SideMenu setLoggedIn={setLoggedIn}/> 
-      </div>
-  );
-};
+      <QueryClientProvider client={queryClient}>
+        <div className={style.nav}>
+          <UserSignature user={user}/>
+          <SideMenu user={user} setUser={setUser}/> 
+        </div>
+      </QueryClientProvider>
+  )}
 
-export default Nav;
+export default Nav

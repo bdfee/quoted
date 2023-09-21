@@ -1,14 +1,13 @@
 import React from 'react'
 
-const UserSignature = ({ setLoggedIn }) => (
+const UserSignature = ({ user }) => (
     <h2
       style={{
         marginLeft: '2vw',
         textJustify: 'center',
       }}
     >
-    {/* style this like a signature */}
-    -username || -anonymous
+    {user ? user : 'anonymous'}
     </h2>
   )
 
