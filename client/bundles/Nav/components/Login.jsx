@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Login = ({ setActiveSession }) => {
+const Login = ({ setLoggedIn }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -48,7 +48,7 @@ const Login = ({ setActiveSession }) => {
             username: '',
             password: '',
           });
-        setActiveSession(true)
+          setLoggedIn(true)
       })
       .catch((error) => console.error(error));
 
@@ -87,7 +87,7 @@ const Login = ({ setActiveSession }) => {
             required
           />
         </div>
-        <button type="submit">LogIn</button>
+        <button type="submit">Log In</button>
       </form>
     </>
   );
