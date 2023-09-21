@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 # this block wraps all routes
 # controllers in snake_case
 # controller file itself in snake_case and suffixed with _controller.rb
-# 
+#
 
 Rails.application.routes.draw do
   get 'quoted', to: 'main#index'
@@ -19,4 +21,3 @@ Rails.application.routes.draw do
 
   get 'api/rankings', to: 'api/rankings#index'
 end
-

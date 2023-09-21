@@ -1,12 +1,11 @@
 # frozen_string_literal: true
+
 # defined hello world controller
 # subclass < superclass
-# ApplicationController class inherits functionality from ActionController::Base 
+# ApplicationController class inherits functionality from ActionController::Base
 
 class MainController < ApplicationController
-  layout "base"
+  layout 'base'
 
-  def index 
-  end
-  
+  def index; end
 end
