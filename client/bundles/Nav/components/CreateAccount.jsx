@@ -1,54 +1,36 @@
 import React, { useState } from 'react';
+import { useMutation } from '@tanstack/react-query'
+import { postCreateAccount } from '../services/postCreateAccount'
 
-const CreateAccount = () => {
 
+const CreateAccount = ({ setUser }) => {
+  const [collapsed, setCollapsed] = useState(true)
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
 
-  const [collapsed, setCollapsed] = useState(true)
-
+  const { mutate: mutateCreateAccount } = useMutation({
+    mutationFn: ({username, password}) => postCreateAccount(username, password),
+    onSuccess: (_, variables) => {
+      setUser(variables.username)
+      setFormData({
+        username: '',
+        password: ''
+      })
+    }
+  })
 
   const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    
     setFormData({
       ...formData,
-      [name]: value,
+      [event.target.name]: event.target.value,
     });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    fetch('/api/users', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({
-            user: {
-                username: formData.username,
-                password: formData.password
-            }
-        })
-    })
-    .then((res) => {
-        if (res.ok) {
-            return res.json()
-        } else {
-            return res.json().then(data => Promise.reject(data))
-        }
-    })
-    .then(data => console.log(data))
-    .catch(error => console.error(error))
-
-    setFormData({
-      username: '',
-      password: '',
-    });
+    mutateCreateAccount(formData)
   };
 
   return (
