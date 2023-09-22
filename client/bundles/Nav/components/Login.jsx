@@ -10,7 +10,7 @@ const Login = ({ user, setUser }) => {
   })
 
   const { mutate: mutateLogin } = useMutation({
-    mutationFn: ({ username, password }) => postLogin(username, password),
+    mutationFn: (formData) => postLogin(formData),
     onSuccess: (data, variables) => {
       setUser(variables.username)
       localStorage.setItem(

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import { postCreateAccount } from '../services/postCreateAccount'
+import { postAccount } from '../services/accountService'
 
 const CreateAccount = ({ setUser }) => {
   const [collapsed, setCollapsed] = useState(true)
@@ -10,8 +10,7 @@ const CreateAccount = ({ setUser }) => {
   })
 
   const { mutate: mutateCreateAccount } = useMutation({
-    mutationFn: ({ username, password }) =>
-      postCreateAccount(username, password),
+    mutationFn: (formData) => postAccount(formData),
     onSuccess: (_, variables) => {
       setUser(variables.username)
       setFormData({

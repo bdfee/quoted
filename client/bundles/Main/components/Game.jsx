@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-import { fetchQuote } from '../services/fetchQuote'
-import { fetchQuotes } from '../services/fetchQuotes'
+import { getQuote, getQuotes } from '../services/quoteService'
 import Author from './Author'
 import Quotes from './Quotes'
 import style from './Main.module.css'
@@ -15,13 +14,13 @@ const Game = () => {
   // todo revise to dedicated endpoint once client is a bit more formed
   const { data: quoteQueue, status } = useQuery({
     queryKey: ['quote-queue'],
-    queryFn: fetchQuotes,
+    queryFn: getQuotes,
     staleTime: Infinity,
   })
 
   // onMutate progress the queue, on mutation success add the payload
   const { mutate: mutateQuoteQuery } = useMutation({
-    mutationFn: fetchQuote,
+    mutationFn: getQuote,
     onMutate: () =>
       queryClient.setQueryData(['quote-queue'], ([_, b, c]) => [b, c]),
     onSuccess: (newQuote) =>
