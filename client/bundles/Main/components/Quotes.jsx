@@ -1,5 +1,5 @@
 import React from 'react'
-import { postScore } from '../services/postScore'
+import { postScore } from '../services/scoreService'
 import Quote from './Quote'
 
 const Quotes = ({ quote, falseQuote, guessed, setGuessed, randomizer }) => {
