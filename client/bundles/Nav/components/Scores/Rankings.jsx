@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getRankings } from '../services/getRankings'
+import { getRankings } from '../../services/getRankings'
 
 const Rankings = () => {
-  const [collapsed, setCollapsed] = useState(true)
-
   const { data: rankings, status } = useQuery({
     queryFn: getRankings,
     queryKey: ['rankings'],
@@ -16,11 +14,10 @@ const Rankings = () => {
 
   return (
     <div>
-      <h2 onClick={() => setCollapsed(!collapsed)}>rankings</h2>
-      <ol style={{ display: collapsed ? 'none' : 'block' }}>
+      <h3>rankings</h3>
+      <ol>
         {rankings.map((ranking) => (
           <li key={ranking.username}>
-            {' '}
             {ranking.username + '-' + ranking.ranking_score}
           </li>
         ))}

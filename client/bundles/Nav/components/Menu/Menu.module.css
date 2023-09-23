@@ -1,0 +1,17 @@
+button {
+    padding: 0;
+    padding-block: 0;
+    padding-inline: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+}
+
+h2 {
+    padding: 0;
+    margin: 0;
+    border: none;
+    outline: none;
+    margin-inline: 0;
+    margin-block: 0;
+}
