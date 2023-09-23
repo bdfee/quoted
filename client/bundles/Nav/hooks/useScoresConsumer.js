@@ -8,11 +8,11 @@ export const useScoresConsumer = (queryClient) => {
         console.log('Connected to ScoresChannel')
       },
       received(data) {
-        if ({ user_score, global_score }) {
+        if (data) {
           console.log('Received data from ScoresChannel:', data)
           queryClient.setQueryData(['scores'], {
-            user_score,
-            global_score,
+            user_score: data.user_score,
+            global_score: data.global_score,
           })
         }
       },
