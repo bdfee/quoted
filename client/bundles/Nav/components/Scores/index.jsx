@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import scoresConsumer from '../services/scoresConsumer'
-import UserScore from './UserScore'
-import GlobalScore from './GlobalScore'
+import scoresConsumer from '../../services/scoresConsumer'
+import Score from './Score'
 import Rankings from './Rankings'
 
-const ScoreBoard = () => {
+const Scores = () => {
   const [userScore, setUserScore] = useState(null)
   const [globalScore, setGlobalScore] = useState(null)
   const [user, setUser] = useState('')
@@ -31,11 +30,11 @@ const ScoreBoard = () => {
 
   return (
     <>
-      <UserScore userScore={userScore} />
-      <GlobalScore globalScore={globalScore} />
+      <Score score={userScore} title="my score" />
+      <Score score={globalScore} title="global score" />
       <Rankings />
     </>
   )
 }
 
-export default ScoreBoard
+export default Scores

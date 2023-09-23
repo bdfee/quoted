@@ -12,6 +12,5 @@ export const postScore = async (isCorrect) => {
 
   const { data } = await axios.post('/api/scores', body, config)
 
-  console.log(config)
   return data
 }
