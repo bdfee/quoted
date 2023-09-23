@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   post 'api/signin', to: 'api/sessions#create'
 
+  get 'api/scores', to: 'api/scores#getScores'
+
   post 'api/scores', to: 'api/scores#increment'
   # Defines the root path route "/" to be handled by hello_world_controller.rb action index
   # root 'main#index'
