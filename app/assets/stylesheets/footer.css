@@ -1,4 +1,8 @@
+img {
+    height: 3vh
+}
+
 .footer {
-    background-color: gray;
-    min-height: 5vh
+    background-color: whitesmoke;
+    max-height: 3vh
 }

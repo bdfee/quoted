@@ -13,10 +13,10 @@ const Nav = () => {
 
   const navStyle = {
     display: 'grid',
-    gridTemplateColumns: windowWidth > 775 ? '80vw 10vw' : '70vw 20vw',
+    gridTemplateColumns: windowWidth > 775 ? '85vw 15vw' : '75vw 25vw',
     gridTemplateRows: '10vh',
     backgroundColor: 'white',
-    padding: '0 5vw',
+    overflow: 'hidden',
   }
 
   const navWrapperStyle = {
