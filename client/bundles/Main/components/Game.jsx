@@ -5,6 +5,10 @@ import Author from './Author'
 import Quotes from './Quotes'
 import ProgressQueueBtn from './ProgressQueueBtn'
 import useWindowDimensions from '../../layoutUtils/useWindowDimensions'
+import {
+  setLocalStorageQueue,
+  getLocalStorageQueue,
+} from '../services/localStorage'
 
 const Game = () => {
   const queryClient = useQueryClient()
@@ -13,24 +17,49 @@ const Game = () => {
   const { width: windowWidth } = useWindowDimensions()
   // prime the quote queue with 3 payloads before rendering component
   // todo revise to dedicated endpoint once client is a bit more formed
+
+  // return local storage, if none fetches three quotes to prime the queue
+  // TODO suspense for initial hard fetch experience
   const { data: quoteQueue, status } = useQuery({
     queryKey: ['quote-queue'],
     queryFn: getQuotes,
+    initialData: getLocalStorageQueue(),
     staleTime: Infinity,
   })
 
-  // onMutate progress the queue, on mutation success add the payload
-  const { mutate: mutateQuoteQuery } = useMutation({
+  // mutation that concats a quote to the quote without progression
+  const { mutate: addQuote } = useMutation({
+    mutationFn: getQuote,
+    onSuccess: (newQuote) => addQuoteToQueues(newQuote),
+  })
+
+  // mutation that progresses both queues, fetches 1 quote, and calls the queue length monitor
+  const { mutate: progressQuoteQueue } = useMutation({
     mutationFn: getQuote,
     onMutate: () =>
-      queryClient.setQueryData(['quote-queue'], ([_, b, c]) => [b, c]),
-    onSuccess: (newQuote) =>
-      queryClient.setQueryData(['quote-queue'], ([a, b]) => [a, b, newQuote]),
+      queryClient.setQueryData(['quote-queue'], ([_, ...rest]) => rest),
+    onSuccess: (newQuote) => addQuoteToQueues(newQuote),
+    onSettled: () => monitorQueueLength(addQuote),
   })
+
+  const addQuoteToQueues = (newQuote) => {
+    queryClient.setQueryData(['quote-queue'], (existingQueue) => {
+      const newQueue = existingQueue.concat(newQuote)
+      setLocalStorageQueue(newQueue)
+      return newQueue
+    })
+  }
+
+  const monitorQueueLength = () => {
+    const queueLength = queryClient.getQueryData(['quote-queue']).length
+    if (queueLength < 5) {
+      addQuote()
+    }
+  }
 
   const handleProgressQueue = () => {
     setRandomizer(Math.random())
-    mutateQuoteQuery()
+    progressQuoteQueue()
     setGuessed(false)
   }
 
