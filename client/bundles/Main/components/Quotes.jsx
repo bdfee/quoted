@@ -5,10 +5,11 @@ import Quote from './Quote'
 const Quotes = ({ quote, falseQuote, guessed, setGuessed, randomizer }) => {
   const isCorrect = (idx) =>
     (randomizer >= 0.5 && idx === 1) || (randomizer < 0.5 && idx === 0)
-  const quotesArr = randomizer > 0.5 ? [falseQuote, quote] : [quote, falseQuote]
+  const quotesArr =
+    randomizer > 0.5 ? [falseQuote, `"${quote}"`] : [`"${quote}"`, falseQuote]
 
   const revealStyle = (idx) => ({
-    backgroundColor: isCorrect(idx) ? 'green' : 'red',
+    borderColor: isCorrect(idx) ? 'green' : 'red',
   })
 
   const handleClick = async (idx) => {
@@ -19,9 +20,14 @@ const Quotes = ({ quote, falseQuote, guessed, setGuessed, randomizer }) => {
   return (
     <div
       style={{
-        gridRowStart: 2,
-        gridColumnStart: 1,
-        gridColumnEnd: 3,
+        gridRowStart: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '3vh',
+        margin: '0 1vw',
+        overflowX: 'hidden',
       }}
     >
       {quotesArr.map((quote, idx) => (
