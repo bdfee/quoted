@@ -7,16 +7,15 @@ const Image = ({ imageUrl }) => {
   return (
     <div
       style={{
-        overflow: 'hidden', // Hide any overflowing content
-        // borderRadius: '50%', // Create rounded corners for an oval portrait effect
+        overflow: 'hidden',
       }}
     >
       <img
         src={source}
         style={{
-          width: '100%', // Ensure the image takes up the entire container
-          height: '100%', // Ensure the image takes up the entire container
-          objectFit: 'scale-down', // Maintain aspect ratio and cover the entire container
+          width: '100%',
+          height: '100%',
+          objectFit: 'scale-down',
           objectPosition: 'top',
         }}
         alt="Author"
