@@ -1,36 +1,32 @@
 import React, { useState } from 'react'
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-import { getQuote, getQuotes } from '../services/quoteService'
+import { useQueryClient } from '@tanstack/react-query'
 import Author from './Author'
 import Quotes from './Quotes'
 import ProgressQueueBtn from './ProgressQueueBtn'
 import useWindowDimensions from '../../layoutUtils/useWindowDimensions'
+
+import { initializeQuoteQueue } from '../queries/initializeQuoteQueue'
+import {
+  addQuoteToQueue,
+  progressQueuesAndAddQuote,
+} from '../mutations/addQuote'
 
 const Game = () => {
   const queryClient = useQueryClient()
   const [randomizer, setRandomizer] = useState(Math.random())
   const [guessed, setGuessed] = useState(false)
   const { width: windowWidth } = useWindowDimensions()
-  // prime the quote queue with 3 payloads before rendering component
-  // todo revise to dedicated endpoint once client is a bit more formed
-  const { data: quoteQueue, status } = useQuery({
-    queryKey: ['quote-queue'],
-    queryFn: getQuotes,
-    staleTime: Infinity,
-  })
 
-  // onMutate progress the queue, on mutation success add the payload
-  const { mutate: mutateQuoteQuery } = useMutation({
-    mutationFn: getQuote,
-    onMutate: () =>
-      queryClient.setQueryData(['quote-queue'], ([_, b, c]) => [b, c]),
-    onSuccess: (newQuote) =>
-      queryClient.setQueryData(['quote-queue'], ([a, b]) => [a, b, newQuote]),
-  })
+  const { data: quoteQueue, status } = initializeQuoteQueue()
+  const { mutate: addQuote } = addQuoteToQueue(queryClient)
+  const { mutate: progressQuoteQueue } = progressQueuesAndAddQuote(
+    addQuote,
+    queryClient
+  )
 
   const handleProgressQueue = () => {
     setRandomizer(Math.random())
-    mutateQuoteQuery()
+    progressQuoteQueue()
     setGuessed(false)
   }
 
