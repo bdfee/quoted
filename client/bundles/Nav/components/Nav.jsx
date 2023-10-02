@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import UserSignature from './UserSignature'
 import Menu from './Menu'
 import useWindowDimensions from '../../layoutUtils/useWindowDimensions'
+
+import 'normalize.css'
 import styles from './Nav.module.css'
 
 const queryClient = new QueryClient()
