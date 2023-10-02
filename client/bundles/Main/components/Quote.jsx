@@ -1,27 +1,23 @@
 import React from 'react'
 import useWindowDimensions from '../../layoutUtils/useWindowDimensions'
+import styles from './Main.module.css'
 
 const Quote = ({ quote, handleClick, index, revealStyle }) => {
   const { width: windowWidth } = useWindowDimensions()
 
+  const responsiveStyle = {
+    fontSize: windowWidth < 600 ? '20px' : '25px',
+  }
+
   return (
     <div
+      className={styles['quote-tile']}
       style={{
         ...revealStyle,
-        height: 'auto',
-        width: 'fit-content',
-        borderRadius: '20px',
-        border: '1px solid black',
       }}
       onClick={() => handleClick(index)}
     >
-      <p
-        style={{
-          fontSize: windowWidth < 600 ? '20px' : '25px',
-          padding: '0px 2vw',
-          cursor: 'pointer',
-        }}
-      >
+      <p className={styles['quote-text']} style={responsiveStyle}>
         {quote}
       </p>
     </div>

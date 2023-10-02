@@ -1,0 +1,31 @@
+.game {
+    display: grid;
+    background-color: white;
+}
+
+.progess-queue-btn {
+    width: 100%
+}
+
+.quote-tile {
+    height: auto;
+    width: fit-content;
+    border-radius: 20px;
+    border: 1px solid black;
+}
+
+.quote-text {
+    padding: 0 2vw;
+    cursor: 'pointer'
+}
+
+.quote-tiles-wrapper {
+    grid-row-start: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 3vh;
+    margin: 0 1vw;
+    overflow-x: hidden;
+}

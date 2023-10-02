@@ -4,6 +4,9 @@ import UserSignature from './UserSignature'
 import Menu from './Menu'
 import useWindowDimensions from '../../layoutUtils/useWindowDimensions'
 
+import 'normalize.css'
+import styles from './Nav.module.css'
+
 const queryClient = new QueryClient()
 
 const Nav = () => {
@@ -11,17 +14,8 @@ const Nav = () => {
 
   const { width: windowWidth } = useWindowDimensions()
 
-  const navStyle = {
-    display: 'grid',
+  const responsiveStyle = {
     gridTemplateColumns: windowWidth > 775 ? '85vw 15vw' : '75vw 25vw',
-    gridTemplateRows: '10vh',
-    backgroundColor: 'white',
-    overflow: 'hidden',
-  }
-
-  const navWrapperStyle = {
-    display: 'flex',
-    justifyContent: 'center',
   }
 
   useEffect(() => {
@@ -34,8 +28,8 @@ const Nav = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div style={navWrapperStyle}>
-        <div style={navStyle}>
+      <div className={styles['nav-wrapper']}>
+        <div className={styles['nav']} style={responsiveStyle}>
           <UserSignature user={user} />
           <Menu user={user} setUser={setUser} />
         </div>

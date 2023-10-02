@@ -5,7 +5,7 @@ import Scores from '../Scores'
 import MenuItem from './MenuItem'
 import SubMenuHeader from './SubMenuHeader'
 import SubMenuContentWrapper from './SubMenuContentWrapper'
-import './Menu.module.css'
+import styles from './Menu.module.css'
 import useWindowDimensions from '../../../layoutUtils/useWindowDimensions'
 
 const Menu = ({ user, setUser }) => {
@@ -18,43 +18,31 @@ const Menu = ({ user, setUser }) => {
 
   const { width: windowWidth } = useWindowDimensions()
 
+  const responsiveMenuItems = {
+    display: collapsed.menu ? 'none' : 'flex',
+    width: windowWidth > 774 ? '15vw' : '25vw',
+  }
+
   const handleCollapsed = (key) =>
     setCollapsed({ ...collapsed, [key]: !collapsed[key] })
 
   const handleLogout = () => {
     localStorage.removeItem('quoted-session')
     setUser('')
-    console.log('click')
-  }
-
-  const menuStyle = {
-    height: '10vh',
   }
 
   return (
     <div>
-      <div style={menuStyle}>
+      <div className={styles['menu-header-wrapper']}>
         <button
+          className={styles['menu-header']}
           type="button"
           onClick={() => handleCollapsed('menu')}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
         >
           menu
         </button>
       </div>
-      <div
-        style={{
-          display: collapsed.menu ? 'none' : 'flex',
-          flexDirection: 'column',
-          backgroundColor: 'white',
-          zIndex: '100',
-          position: 'absolute',
-          width: windowWidth > 774 ? '10vw' : '20vw',
-        }}
-      >
+      <div className={styles['menu-items']} style={responsiveMenuItems}>
         <MenuItem>
           <SubMenuHeader
             title="scores"

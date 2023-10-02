@@ -1,12 +1,8 @@
 import React from 'react'
+import styles from './Main.module.css'
 
 const NextQueueBtn = ({ progressQueue }) => (
-  <button
-    style={{
-      width: '100%',
-    }}
-    onClick={progressQueue}
-  >
+  <button className={styles['progress-queue-btn']} onClick={progressQueue}>
     next quote
   </button>
 )

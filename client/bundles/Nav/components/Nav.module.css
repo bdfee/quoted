@@ -1,0 +1,13 @@
+/* static styles here */
+
+.nav {
+    display: grid;
+    grid-template-rows: 10vh;
+    background-color: white;
+    overflow: hidden;
+}
+
+.nav-wrapper {
+    display: flex;
+    justify-content: center;
+}

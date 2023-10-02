@@ -1,25 +1,16 @@
 import React from 'react'
 import no_image from './no_image.svg'
+import styles from './Author.module.css'
 
-const Image = ({ imageUrl }) => {
+const Image = ({ imageUrl, name }) => {
   const source = imageUrl ? imageUrl : no_image
+  const alt = imageUrl
+    ? `Image of ${name} from wikipedia`
+    : 'no image is being displayed'
 
   return (
-    <div
-      style={{
-        overflow: 'hidden',
-      }}
-    >
-      <img
-        src={source}
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'scale-down',
-          objectPosition: 'top',
-        }}
-        alt="Author"
-      />
+    <div className={styles['author-image-wrapper']}>
+      <img className={styles['author-image']} src={source} alt={alt} />
     </div>
   )
 }

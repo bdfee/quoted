@@ -11,6 +11,8 @@ import {
   progressQueuesAndAddQuote,
 } from '../mutations/addQuote'
 
+import styles from './Main.module.css'
+
 const Game = () => {
   const queryClient = useQueryClient()
   const [randomizer, setRandomizer] = useState(Math.random())
@@ -30,15 +32,8 @@ const Game = () => {
     setGuessed(false)
   }
 
-  const mainStyle = () => {
-    const gridTemplateRows =
-      windowWidth < 600 ? '45vh 20vh 10vh' : '35vh 44vh 5vh'
-    return {
-      display: 'grid',
-      girdTemplateColumns: '30vw 70vw',
-      gridTemplateRows,
-      backgroundColor: 'white',
-    }
+  const responsiveStyle = {
+    gridTemplateRows: windowWidth < 600 ? '45vh 20vh 10vh' : '35vh 44vh 5vh',
   }
 
   if (status === 'loading' || status === 'error') {
@@ -48,7 +43,7 @@ const Game = () => {
   const [{ author, image_url, snippet, quote, false_quote }] = quoteQueue
 
   return (
-    <div style={mainStyle()}>
+    <div className={styles['game']} style={responsiveStyle}>
       <Quotes
         quote={quote}
         falseQuote={false_quote}
@@ -56,7 +51,6 @@ const Game = () => {
         guessed={guessed}
         setGuessed={setGuessed}
       />
-
       <Author name={author} imageUrl={image_url} snippet={snippet} />
       <ProgressQueueBtn progressQueue={handleProgressQueue} />
     </div>
