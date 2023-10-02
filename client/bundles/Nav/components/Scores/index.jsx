@@ -4,6 +4,7 @@ import Score from './Score'
 import Rankings from './Rankings'
 import { getScores } from '../../services/scoreService'
 import { useScoresConsumer } from '../../hooks/useScoresConsumer'
+import styles from './Scores.module.css'
 
 const Scores = () => {
   const queryClient = useQueryClient()
@@ -21,11 +22,11 @@ const Scores = () => {
   }
 
   return (
-    <>
+    <div className={styles['scores']}>
       <Score score={scores.user_score} title="my score" />
       <Score score={scores.global_score} title="global score" />
       <Rankings />
-    </>
+    </div>
   )
 }
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { postLogin } from '../../services/postLogin'
+import styles from './Menu.module.css'
 
 const Login = ({ setUser }) => {
   const [formData, setFormData] = useState({
@@ -38,29 +39,27 @@ const Login = ({ setUser }) => {
     })
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label htmlFor="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          value={formData.username}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-        />
-      </div>
+    <form onSubmit={handleLogin} className={styles['login-form']}>
+      <label htmlFor="username">Username</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        value={formData.username}
+        onChange={handleInputChange}
+        required
+      />
+
+      <label htmlFor="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        value={formData.password}
+        onChange={handleInputChange}
+        required
+      />
+
       <button type="submit">Log In</button>
     </form>
   )
