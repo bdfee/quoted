@@ -6,8 +6,10 @@ module Api
     require 'json'
     require 'openai'
 
+
     # init client and store as class var
-    @@openai_client ||= OpenAI::Client.new
+      @@openai_client ||= OpenAI::Client.new
+ 
 
     def index
       # returns content and author

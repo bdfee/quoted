@@ -84,6 +84,6 @@ test:
 #
 production:
   <<: *default
-  database: shaka_production
-  username: shaka
-  password: <%= ENV["SHAKA_DATABASE_PASSWORD"] %>
+  database: <%= ENV['DB'] %>
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PW'] %>

@@ -32,7 +32,7 @@ const Game = () => {
 
   const mainStyle = () => {
     const gridTemplateRows =
-      windowWidth < 600 ? '55vh 24vh 5vh' : '35vh 44vh 5vh'
+      windowWidth < 600 ? '45vh 20vh 10vh' : '35vh 44vh 5vh'
     return {
       display: 'grid',
       girdTemplateColumns: '30vw 70vw',

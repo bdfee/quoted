@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
-OpenAI.configure do |config|
-  config.access_token = ENV.fetch('OPENAI_KEY')
+if ENV['OPENAI_KEY']
+  OpenAI.configure do |config|
+    config.access_token = ENV.fetch('OPENAI_KEY')
+  end
 end
